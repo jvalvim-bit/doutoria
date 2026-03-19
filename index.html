@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dr. IA — Consultoria Jurídica Digital</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body { background: #fafafa; }
+    textarea:focus, button:focus { outline: none; }
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-thumb { background: #33333344; border-radius: 4px; }
+    ::selection { background: rgba(0,0,0,0.1); }
+
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+    @keyframes fadeUp    { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes pulse     { 0%,100%{ opacity:.2; transform:scale(.7); } 50%{ opacity:1; transform:scale(1); } }
+    @keyframes arrowBounce { 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(5px); } }
+    @keyframes eyebrowSlide { from{ opacity:0; transform:translateX(-20px); } to{ opacity:1; transform:translateX(0); } }
+    @keyframes nameReveal { from{ opacity:0; transform:translateY(30px) skewX(-5deg); } to{ opacity:1; transform:translateY(0) skewX(0); } }
+    @keyframes leadSlide  { from{ opacity:0; transform:translateY(16px); } to{ opacity:1; transform:translateY(0); } }
+    @keyframes ctaSlide   { from{ opacity:0; } to{ opacity:1; } }
+    @keyframes gridPan    { from{ background-position: 0 0; } to{ background-position: 48px 48px; } }
+    @keyframes orbFloat1  { 0%,100%{ transform:translate(0,0) scale(1); } 40%{ transform:translate(20px,-30px) scale(1.08); } 70%{ transform:translate(-15px,15px) scale(0.95); } }
+    @keyframes orbFloat2  { 0%,100%{ transform:translate(0,0) scale(1); } 35%{ transform:translate(-25px,20px) scale(1.05); } 65%{ transform:translate(18px,-18px) scale(0.97); } }
+    @keyframes areaReveal { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes scanMove   { 0%{ left:-20%; } 100%{ left:110%; } }
+
+    @keyframes logoRock {
+      0%,100% { transform: rotateZ(0deg) rotateY(0deg); }
+      20%     { transform: rotateZ(2.5deg) rotateY(8deg); }
+      50%     { transform: rotateZ(-2deg) rotateY(-6deg); }
+      75%     { transform: rotateZ(1.5deg) rotateY(5deg); }
+    }
+    @keyframes panSwingL  { 0%,100%{ transform:translateY(0px); } 40%{ transform:translateY(4px); } 80%{ transform:translateY(-3px); } }
+    @keyframes panSwingR  { 0%,100%{ transform:translateY(0px); } 40%{ transform:translateY(-4px); } 80%{ transform:translateY(3px); } }
+    @keyframes chainSwingL{ 0%,100%{ transform:skewY(0deg) scaleY(1); } 40%{ transform:skewY(1.5deg) scaleY(1.05); } 80%{ transform:skewY(-1.2deg) scaleY(0.96); } }
+    @keyframes chainSwingR{ 0%,100%{ transform:skewY(0deg) scaleY(1); } 40%{ transform:skewY(-1.5deg) scaleY(0.96); } 80%{ transform:skewY(1.2deg) scaleY(1.05); } }
+    @keyframes knobPulse  { 0%,100%{ filter:drop-shadow(0 0 2px rgba(0,0,0,0.3)); } 50%{ filter:drop-shadow(0 0 5px rgba(0,0,0,0.6)); } }
+    @keyframes glowRing   { 0%,100%{ opacity:0.06; } 50%{ opacity:0.18; } }
+    @keyframes beamShimmer{ 0%,100%{ opacity:0.6; } 50%{ opacity:1; } }
+
+    .orb-float-1  { animation: orbFloat1 8s ease-in-out infinite; }
+    .orb-float-2  { animation: orbFloat2 11s ease-in-out infinite; }
+    .arrow-bounce { animation: arrowBounce 1.6s ease-in-out infinite; display:inline-block; }
+    .eyebrow-slide{ animation: eyebrowSlide 0.8s cubic-bezier(0.22,1,0.36,1) 0.2s both; }
+    .name-reveal  { animation: nameReveal  0.9s cubic-bezier(0.22,1,0.36,1) 0.4s both; }
+    .lead-slide   { animation: leadSlide   0.7s ease 0.9s both; }
+    .cta-slide    { animation: ctaSlide    0.7s ease 1.1s both; }
+    .hero3d       { animation: gridPan 4s linear infinite; }
+    .fade-up      { animation: fadeUp .5s cubic-bezier(0.22,1,0.36,1) forwards; }
+    .dot-0 { animation: pulse 1.4s ease-in-out infinite 0.0s; }
+    .dot-1 { animation: pulse 1.4s ease-in-out infinite 0.2s; }
+    .dot-2 { animation: pulse 1.4s ease-in-out infinite 0.4s; }
+
+    .logo-icon-wrap {
+      perspective: 200px; transform-style: preserve-3d;
+      animation: logoRock 5s ease-in-out infinite; transform-origin: center center;
+    }
+    .logo-icon-wrap:hover { animation: logoRock 1.2s ease-in-out infinite; }
+    .logo-pan-l    { animation: panSwingL   5s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+    .logo-pan-r    { animation: panSwingR   5s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+    .logo-chain-l  { animation: chainSwingL 5s ease-in-out infinite; transform-origin: top center; transform-box: fill-box; }
+    .logo-chain-r  { animation: chainSwingR 5s ease-in-out infinite; transform-origin: top center; transform-box: fill-box; }
+    .logo-knob     { animation: knobPulse   2.5s ease-in-out infinite; }
+    .logo-glow-ring{ animation: glowRing    3s ease-in-out infinite; }
+    .logo-beam     { animation: beamShimmer 3s ease-in-out infinite; }
+
+    .area-card {
+      color: #aaa;
+      transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1) !important;
+    }
+    .area-card:hover {
+      background: #0a0a0a !important;
+      color: #fff !important;
+      border-color: rgba(0,0,0,0.8) !important;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12) !important;
+      transform: translateY(-3px) !important;
+    }
+    .area-card-on {
+      background: #0a0a0a !important;
+      color: #fff !important;
+      border-color: rgba(0,0,0,0.8) !important;
+    }
+    .quick-btn { transition: all 0.18s ease !important; }
+    .quick-btn:hover {
+      background: #0a0a0a !important;
+      color: #fff !important;
+      border-color: rgba(0,0,0,0.6) !important;
+    }
+    .quick-btn:hover .qarr { color: rgba(255,255,255,0.4) !important; }
+    .sbtn:not(:disabled):hover { background: #333 !important; }
+    .back:hover { background: #f0f0f0 !important; color: #111 !important; }
+    .lawyer-btn:hover { background: #333 !important; }
+    .ap-cta:hover { background: #333 !important; }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useRef, useEffect, useCallback } = React;
+
+/* ─── SYSTEM PROMPT ─── */
+const SYSTEM_PROMPT = `Você é o Dr. IA, advogado virtual brasileiro.
+
+══════════════════════════════════════════════════
+⚠️ PRIMEIRA COISA A FAZER: IDENTIFICAR O TIPO DE RESPOSTA
+══════════════════════════════════════════════════
+
+PASSO 1 — Verifique se o usuário está pedindo para ELABORAR/REDIGIR/FAZER/CRIAR uma peça processual.
+
+Palavras-chave que ATIVAM o MODO PEÇA PROCESSUAL:
+"elabore", "redija", "faça", "crie", "escreva", "monte", "elaborar", "redigir", "fazer",
+"petição", "contestação", "recurso", "apelação", "agravo", "habeas corpus", "mandado de segurança",
+"embargos", "memorial", "contrarrazões", "denúncia", "queixa-crime", "impugnação", "réplica",
+"tutela de urgência", "peça processual", "peça jurídica", "inicial", "ação judicial"
+
+Se o pedido contiver QUALQUER uma dessas palavras → USE OBRIGATORIAMENTE O MODO PEÇA PROCESSUAL.
+Se o pedido for uma dúvida, pergunta ou pedido de orientação → USE O MODO CONSULTA JURÍDICA.
+
+══════════════════════════════════════════════════
+MODO PEÇA PROCESSUAL
+══════════════════════════════════════════════════
+
+REGRA ABSOLUTA: No modo peça, vá DIRETO à peça. NUNCA escreva introduções.
+Comece IMEDIATAMENTE pelo endereçamento em negrito.
+
+FORMATAÇÃO OBRIGATÓRIA:
+
+**[ENDEREÇAMENTO EM NEGRITO]**
+**[NOME DA PEÇA EM NEGRITO]**
+
+**I — DOS FATOS**
+Narrativa detalhada, cronológica e numerada (1.1, 1.2, 1.3...).
+
+**II — DO DIREITO**
+**II.1 — [Tema jurídico]**
+— LEGISLAÇÃO: cite artigos completos.
+— JURISPRUDÊNCIA: STF/STJ/TST.
+— DOUTRINA: autores por área.
+
+**III — DOS PEDIDOS**
+a) [pedido principal]; b) [pedidos cumulados]; ...
+
+**IV — DO VALOR DA CAUSA**
+R$ [VALOR] ([por extenso]), conforme art. 292 do CPC/2015.
+
+Nestes termos, pede deferimento.
+[Cidade], [data].
+
+**[NOME DO ADVOGADO]**
+**OAB/[UF] nº [número]**
+
+QUALIDADE MÍNIMA: mínimo 3 fundamentos legais, 2 citações jurisprudenciais, 1 doutrinária. Dados ausentes em [COLCHETES].
+
+══════════════════════════════════════════════════
+MODO CONSULTA JURÍDICA
+══════════════════════════════════════════════════
+
+Estrutura obrigatória com títulos em **negrito**:
+
+**1. Acolhimento e leitura do caso** — entenda com empatia. Sinalize urgências.
+**2. O que o Direito brasileiro diz** — contextualize sem citar artigos ainda.
+**3. Fundamentos legais aplicáveis** — artigos integrados ao contexto (CF, CC, CP, CLT, CDC, CPC).
+**4. O que os tribunais têm decidido** — súmulas, teses e precedentes do STF/STJ/TST.
+**5. O que a doutrina ensina** — autores por área.
+**6. O que você pode fazer agora** — provas, prazos, medidas, ações cabíveis, riscos.
+**7. Por que você precisa de um advogado** — OAB, Defensoria Pública, Núcleos de Prática Jurídica.
+
+══════════════════════════════════════════════════
+REGRAS GERAIS
+══════════════════════════════════════════════════
+— Lei brasileira vigente apenas
+— Nunca invente artigos, súmulas ou precedentes inexistentes
+— Se a mensagem for vaga, peça UMA informação essencial antes de responder
+— Sem falsas garantias de resultado`;
+
+/* ─── AREAS ─── */
+const areas = [
+  { icon:"⚖️", label:"Direito Civil", desc:"Regula as relações entre pessoas físicas e jurídicas no cotidiano: contratos, responsabilidade civil, obrigações, posse e propriedade, família e sucessões. É a espinha dorsal do ordenamento privado brasileiro, fundamentado no Código Civil de 2002." },
+  { icon:"👨‍👩‍👧", label:"Direito de Família", desc:"Disciplina os vínculos familiares: casamento, união estável, divórcio, guarda de filhos, alimentos e adoção. Protege a dignidade de cada membro da família com base na Constituição Federal e no Código Civil." },
+  { icon:"🏢", label:"Direito Trabalhista", desc:"Regula a relação entre empregados e empregadores, garantindo direitos como salário mínimo, FGTS, férias, 13º salário, aviso prévio e proteção contra demissão arbitrária. Regido pela CLT e pela Constituição Federal." },
+  { icon:"🏛️", label:"Direito Penal", desc:"Define os crimes, as contravenções e as respectivas penas. Protege bens jurídicos essenciais como a vida, a liberdade, o patrimônio e a dignidade. Fundamentado no Código Penal, CPP e legislações especiais." },
+  { icon:"🏠", label:"Direito Imobiliário", desc:"Trata das relações envolvendo bens imóveis: compra e venda, locação, usucapião, registro de imóveis, incorporações e regularização fundiária. Essencial para garantir segurança jurídica nas transações imobiliárias." },
+  { icon:"💼", label:"Direito Empresarial", desc:"Regula a atividade econômica das empresas: constituição societária, contratos empresariais, recuperação judicial, falência, títulos de crédito e propriedade industrial." },
+  { icon:"💻", label:"Direito Digital", desc:"Área em constante evolução que trata de crimes cibernéticos, proteção de dados pessoais (LGPD), contratos digitais, responsabilidade de plataformas e direitos dos usuários na internet." },
+  { icon:"🌿", label:"Direito do Consumidor", desc:"Protege o consumidor nas relações de consumo, garantindo o direito à informação, qualidade dos produtos, inversão do ônus da prova e reparação por danos. Regido pelo CDC (Lei nº 8.078/1990)." },
+  { icon:"🏥", label:"Direito Médico e da Saúde", desc:"Regula as relações entre profissionais de saúde, pacientes e instituições hospitalares. Trata de erros médicos, responsabilidade civil e ética, direito ao tratamento e acesso ao sistema de saúde." },
+  { icon:"🌎", label:"Direito Ambiental", desc:"Protege o meio ambiente como bem difuso. Trata de licenciamento ambiental, crimes ecológicos, áreas de preservação permanente e responsabilidade por danos ambientais." },
+  { icon:"🏛️", label:"Direito Constitucional", desc:"Estuda a Constituição Federal de 1988 como norma suprema. Define direitos fundamentais, organização do Estado, separação dos poderes e controle de constitucionalidade." },
+  { icon:"📋", label:"Direito Administrativo", desc:"Regula a atuação do poder público: licitações, contratos administrativos, servidores públicos, atos administrativos e controle da Administração." },
+  { icon:"💰", label:"Direito Tributário", desc:"Disciplina a relação entre o Fisco e os contribuintes: impostos, taxas, contribuições, planejamento tributário e execução fiscal." },
+  { icon:"🛂", label:"Direito Previdenciário", desc:"Garante os benefícios da Previdência Social: aposentadoria, pensão por morte, auxílio-doença, BPC/LOAS e reabilitação profissional." },
+  { icon:"🌐", label:"Direito Internacional", desc:"Regula as relações jurídicas entre Estados, organizações internacionais e indivíduos além das fronteiras nacionais. Abrange tratados, extradição, comércio internacional e direitos humanos globais." },
+  { icon:"🚢", label:"Direito Marítimo", desc:"Regula a navegação, o transporte aquaviário, os contratos de afretamento, abalroamentos, salvamento marítimo e responsabilidade civil em acidentes no mar." },
+  { icon:"✈️", label:"Direito Aeronáutico", desc:"Disciplina a aviação civil e comercial, acidentes aéreos, responsabilidade das companhias e transporte de passageiros e cargas." },
+  { icon:"🎓", label:"Direito Educacional", desc:"Trata dos direitos no âmbito educacional: acesso à educação, relação entre instituições e alunos, mensalidades, cotas e educação especial." },
+  { icon:"👶", label:"Direito da Criança e do Adolescente", desc:"Protege crianças e adolescentes com prioridade absoluta conforme o ECA. Trata de adoção, medidas socioeducativas, abuso e exploração." },
+  { icon:"♿", label:"Direito das Pessoas com Deficiência", desc:"Garante inclusão, acessibilidade e plena participação social às pessoas com deficiência, fundamentado na Lei Brasileira de Inclusão (Lei nº 13.146/2015)." },
+  { icon:"🏦", label:"Direito Bancário e Financeiro", desc:"Regula as relações entre instituições financeiras e clientes: contratos bancários, juros abusivos, superendividamento e sigilo bancário." },
+  { icon:"🤝", label:"Direito dos Contratos", desc:"Estuda a formação, execução e extinção dos contratos civis e empresariais. Abrange boa-fé objetiva, função social, vícios de consentimento e inadimplemento." },
+  { icon:"🚗", label:"Direito de Trânsito", desc:"Regula as infrações, acidentes, suspensão de CNH, recursos de multas e responsabilidade civil por danos causados no trânsito." },
+  { icon:"🏗️", label:"Direito da Construção", desc:"Trata de contratos de empreitada, responsabilidade do construtor, atrasos, vícios construtivos e incorporação imobiliária." },
+  { icon:"🎭", label:"Direito Autoral e Propriedade Intelectual", desc:"Protege criações intelectuais: obras literárias, musicais, artísticas, softwares, marcas e patentes. Regulado pela Lei de Direitos Autorais e pelo INPI." },
+];
+
+const ALL_QUESTIONS = [
+  "Quais são meus direitos como consumidor em caso de produto com defeito?",
+  "Como funciona a pensão alimentícia no Brasil?",
+  "O que é habeas corpus e quando posso utilizá-lo?",
+  "Quais são os direitos do trabalhador demitido sem justa causa?",
+  "Como registrar um imóvel corretamente?",
+  "O que é usucapião e como funciona?",
+  "Posso ser demitido durante a licença médica?",
+  "O que fazer quando o locador se recusa a devolver o depósito caução?",
+  "Quais são os direitos do réu no processo penal brasileiro?",
+  "Como funciona o divórcio consensual e litigioso?",
+  "O que é dano moral e quando tenho direito a indenização?",
+  "Meu empregador pode descontar faltas do meu salário?",
+  "O que é inventário e como é feito sem advogado?",
+  "Quais são os direitos do idoso garantidos pela legislação?",
+  "Como funciona a guarda compartilhada de filhos?",
+  "Posso processar uma empresa por propaganda enganosa?",
+  "O que é legítima defesa no Direito Penal?",
+  "Como funciona o processo de adoção no Brasil?",
+  "Quais são os direitos do réu em caso de prisão em flagrante?",
+  "O que é ação de despejo e como me defender?",
+  "Como recorrer de uma multa de trânsito indevida?",
+  "O que é crime de estelionato e quais as penas previstas?",
+  "Tenho direito ao seguro-desemprego se pedir demissão?",
+  "O que é a Lei Maria da Penha e quem ela protege?",
+  "Como funciona a herança quando não há testamento?",
+  "Posso gravar uma conversa sem autorização como prova?",
+  "Como funciona a revisão de benefício do INSS?",
+  "Quais são as hipóteses de prisão preventiva no Brasil?",
+  "O que é contrato de trabalho intermitente?",
+  "Como funciona a aposentadoria por invalidez?",
+  "Posso cancelar uma compra feita pela internet?",
+  "O que é mandado de segurança e quando usar?",
+  "Como funciona a ação de alimentos gravídicos?",
+  "O que fazer quando a construtora atrasa a entrega do imóvel?",
+  "Como registrar uma marca no Brasil?",
+  "Tenho direito a horas extras trabalhando em home office?",
+];
+
+function pickQuestions() {
+  return [...ALL_QUESTIONS].sort(() => Math.random() - 0.5).slice(0, 6);
+}
+
+/* ─── STYLES ─── */
+const S = {
+  root: { minHeight:"100vh", background:"#fafafa", fontFamily:"'Inter',sans-serif", color:"#111", position:"relative", overflow:"hidden" },
+  orb1: { position:"fixed", top:-200, right:-200, width:600, height:600, borderRadius:"50%", background:"radial-gradient(circle,rgba(0,0,0,0.03) 0%,transparent 65%)", pointerEvents:"none" },
+  orb2: { position:"fixed", bottom:-150, left:-150, width:500, height:500, borderRadius:"50%", background:"radial-gradient(circle,rgba(0,0,0,0.02) 0%,transparent 65%)", pointerEvents:"none" },
+  header: { background:"rgba(255,255,255,0.9)", backdropFilter:"blur(24px)", borderBottom:"1px solid rgba(0,0,0,0.07)", position:"sticky", top:0, zIndex:100 },
+  hRow: { maxWidth:1020, margin:"0 auto", padding:"14px 32px", display:"flex", alignItems:"center", justifyContent:"space-between" },
+  logo: { display:"flex", alignItems:"center", gap:14, cursor:"pointer", textDecoration:"none" },
+  logoIcon: { position:"relative", width:40, height:46, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 },
+  brand: { fontFamily:"'Cinzel',serif", fontSize:20, fontWeight:600, color:"#0a0a0a", letterSpacing:"0.12em", lineHeight:1.1 },
+  brandSub: { fontFamily:"'Inter',sans-serif", fontSize:9, color:"#aaa", letterSpacing:"0.22em", textTransform:"uppercase", marginTop:3 },
+  lawyerBtn: { background:"#0a0a0a", color:"#fff", border:"none", borderRadius:8, padding:"9px 18px", fontFamily:"'Cinzel',serif", fontSize:9.5, fontWeight:600, letterSpacing:"0.1em", cursor:"pointer", display:"flex", alignItems:"center", gap:7, boxShadow:"0 3px 16px rgba(0,0,0,0.12)", transition:"all 0.18s", flexShrink:0 },
+  main: { maxWidth:1020, margin:"0 auto", padding:"0 32px 80px" },
+
+  heroBanner: { position:"relative", overflow:"hidden", background:"#080808", border:"1px solid rgba(255,255,255,0.06)", borderRadius:20, margin:"24px 0 52px", padding:"52px 48px 36px", display:"flex", flexDirection:"column", alignItems:"stretch", minHeight:380, boxShadow:"0 32px 80px rgba(0,0,0,0.22),inset 0 1px 0 rgba(255,255,255,0.06)" },
+  heroGrid: { position:"absolute", inset:0, backgroundImage:"linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px)", backgroundSize:"48px 48px", maskImage:"radial-gradient(ellipse 90% 90% at 50% 50%,black 20%,transparent 100%)", WebkitMaskImage:"radial-gradient(ellipse 90% 90% at 50% 50%,black 20%,transparent 100%)" },
+  heroSpotlight: { position:"absolute", top:-120, left:"50%", transform:"translateX(-50%)", width:500, height:500, borderRadius:"50%", background:"radial-gradient(circle,rgba(255,255,255,0.07) 0%,transparent 65%)", pointerEvents:"none" },
+  orb3d1: { position:"absolute", width:300, height:300, borderRadius:"50%", background:"radial-gradient(circle,rgba(255,255,255,0.04) 0%,transparent 70%)", top:"-60px", left:"-60px", pointerEvents:"none" },
+  orb3d2: { position:"absolute", width:240, height:240, borderRadius:"50%", background:"radial-gradient(circle,rgba(255,255,255,0.03) 0%,transparent 70%)", bottom:"-40px", right:"-40px", pointerEvents:"none" },
+  heroInner: { display:"flex", alignItems:"center", justifyContent:"space-between", gap:32, flex:1, position:"relative", zIndex:2 },
+
+  heroLeft: { display:"flex", flexDirection:"column", gap:20, width:170, flexShrink:0 },
+  heroTagStack: { display:"flex", flexDirection:"column", gap:10 },
+  heroTag: { fontFamily:"'Cinzel',serif", fontSize:11, letterSpacing:"0.2em", color:"#ffffff", textTransform:"uppercase", paddingLeft:14, borderLeft:"2px solid rgba(255,255,255,0.4)", lineHeight:2, fontWeight:400 },
+  heroSideText: { fontFamily:"'Cormorant Garamond',serif", fontSize:14, lineHeight:1.7, color:"rgba(255,255,255,0.65)", letterSpacing:"0.02em" },
+
+  heroCenter: { display:"flex", flexDirection:"column", alignItems:"center", flex:1 },
+  heroCenterName: { display:"flex", alignItems:"baseline", gap:14, marginBottom:18 },
+  heroNameLine1: { fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(32px,3.5vw,46px)", fontWeight:400, color:"rgba(255,255,255,0.55)", letterSpacing:"0.18em" },
+  heroNameLine2: { fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(80px,9vw,118px)", fontWeight:700, color:"#ffffff", letterSpacing:"-0.02em", lineHeight:0.85, textShadow:"0 0 60px rgba(255,255,255,0.25)" },
+  heroEyebrow: { fontFamily:"'Cinzel',serif", fontSize:9, letterSpacing:"0.25em", color:"rgba(255,255,255,0.6)", textTransform:"uppercase", textAlign:"center" },
+
+  heroRight: { display:"flex", flexDirection:"column", alignItems:"flex-end", width:170, flexShrink:0 },
+  heroStatStack: { display:"flex", flexDirection:"column", gap:0, alignItems:"flex-end" },
+  heroStat: { display:"flex", flexDirection:"column", alignItems:"flex-end", padding:"12px 0" },
+  heroStatNum: { fontFamily:"'Cinzel',serif", fontSize:22, fontWeight:600, color:"#ffffff", letterSpacing:"0.08em", lineHeight:1 },
+  heroStatLabel: { fontFamily:"'Inter',sans-serif", fontSize:10, color:"rgba(255,255,255,0.55)", letterSpacing:"0.12em", textTransform:"uppercase", marginTop:4 },
+  heroStatDivider: { width:40, height:1, background:"rgba(255,255,255,0.15)", alignSelf:"flex-end" },
+
+  heroCta: { display:"flex", alignItems:"center", justifyContent:"center", gap:10, position:"relative", zIndex:2, marginTop:28, paddingTop:22, borderTop:"1px solid rgba(255,255,255,0.1)" },
+  heroCtaDot: { width:6, height:6, borderRadius:"50%", background:"rgba(255,255,255,0.7)", display:"block" },
+  heroCtaText: { fontFamily:"'Inter',sans-serif", fontSize:10, color:"rgba(255,255,255,0.6)", letterSpacing:"0.14em", textTransform:"uppercase" },
+  heroCtaArrow: { fontFamily:"'Inter',sans-serif", fontSize:14, color:"rgba(255,255,255,0.7)" },
+
+  section: { marginBottom:56 },
+  secLabel: { fontFamily:"'Cinzel',serif", fontSize:9, fontWeight:600, letterSpacing:"0.3em", textTransform:"uppercase", color:"#bbb", marginBottom:18, paddingBottom:12, borderBottom:"1px solid rgba(0,0,0,0.07)" },
+
+  aGrid: { display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(175px,1fr))", gap:8 },
+  aCard: { position:"relative", background:"#fff", border:"1px solid rgba(0,0,0,0.08)", borderRadius:10, padding:"18px 16px 14px", cursor:"pointer", display:"flex", flexDirection:"column", alignItems:"flex-start", gap:8, textAlign:"left", boxShadow:"0 2px 12px rgba(0,0,0,0.05)", transition:"all 0.25s cubic-bezier(0.34,1.56,0.64,1)", overflow:"hidden", animation:"areaReveal 0.45s ease both" },
+  aCardIcon: { fontSize:24, lineHeight:1, display:"block" },
+  aCardLabel: { fontFamily:"'Inter',sans-serif", fontSize:11, fontWeight:400, lineHeight:1.4, color:"inherit", letterSpacing:"0.02em" },
+  aCardArrow: { position:"absolute", bottom:10, right:12, fontSize:12, opacity:0.2 },
+
+  qGrid: { display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))", gap:8 },
+  qBtn: { background:"#fff", border:"1px solid rgba(0,0,0,0.08)", borderRadius:8, padding:"12px 14px", textAlign:"left", cursor:"pointer", color:"#555", fontFamily:"'Cormorant Garamond',serif", fontSize:14.5, lineHeight:1.55, fontWeight:400, display:"flex", alignItems:"flex-start", gap:10, boxShadow:"0 1px 6px rgba(0,0,0,0.04)" },
+  qarr: { color:"rgba(0,0,0,0.2)", fontSize:18, lineHeight:1, flexShrink:0, marginTop:1 },
+
+  inputCard: { background:"#fff", border:"1px solid rgba(0,0,0,0.1)", borderRadius:14, padding:"22px 24px", boxShadow:"0 4px 32px rgba(0,0,0,0.07)" },
+  ta: { background:"transparent", border:"none", borderBottom:"1px solid rgba(0,0,0,0.08)", color:"#111", fontFamily:"'Cormorant Garamond',serif", fontSize:17, lineHeight:1.7, resize:"none", width:"100%", paddingBottom:14, marginBottom:14 },
+  taRow: { display:"flex", alignItems:"center", justifyContent:"space-between" },
+  hint: { fontFamily:"'Inter',sans-serif", fontSize:9, color:"#ccc", letterSpacing:"0.07em" },
+  sbtn: { background:"#0a0a0a", color:"#fff", border:"none", borderRadius:7, padding:"9px 26px", fontFamily:"'Cinzel',serif", fontSize:10, fontWeight:600, cursor:"pointer", letterSpacing:"0.12em", transition:"all 0.18s", boxShadow:"0 2px 16px rgba(0,0,0,0.15)" },
+  off: { opacity:0.25, cursor:"not-allowed" },
+  attachBtn: { background:"transparent", border:"1px solid rgba(0,0,0,0.1)", borderRadius:6, padding:"5px 11px", fontFamily:"'Inter',sans-serif", fontSize:11, color:"#888", cursor:"pointer", display:"flex", alignItems:"center", gap:5, transition:"all 0.18s", whiteSpace:"nowrap" },
+  attachIconBtn: { background:"transparent", border:"1px solid rgba(0,0,0,0.1)", borderRadius:6, width:34, height:34, fontSize:15, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 },
+
+  chatWrap: { display:"flex", flexDirection:"column", height:"calc(100vh - 130px)", paddingTop:24 },
+  chatBar: { display:"flex", alignItems:"center", gap:16, paddingBottom:16, marginBottom:6, borderBottom:"1px solid rgba(0,0,0,0.07)" },
+  back: { background:"#f5f5f5", border:"1px solid rgba(0,0,0,0.08)", color:"#666", padding:"6px 14px", borderRadius:6, cursor:"pointer", fontFamily:"'Inter',sans-serif", fontSize:11, fontWeight:500, transition:"all 0.18s", letterSpacing:"0.05em" },
+  chatMeta: { fontFamily:"'Cinzel',serif", fontSize:16, display:"flex", alignItems:"baseline", gap:10 },
+  chatDr: { fontStyle:"normal", fontWeight:600, color:"#0a0a0a" },
+  chatArea: { color:"#bbb", fontSize:12, fontWeight:400, fontFamily:"'Inter',sans-serif" },
+  feed: { flex:1, overflowY:"auto", display:"flex", flexDirection:"column", gap:20, paddingRight:4, paddingBottom:14, paddingTop:12 },
+  row: { display:"flex", alignItems:"flex-start", gap:12 },
+  av: { width:34, height:34, borderRadius:"50%", background:"#0a0a0a", display:"flex", alignItems:"center", justifyContent:"center", fontFamily:"'Cinzel',serif", fontSize:10, fontWeight:700, color:"#fff", flexShrink:0, boxShadow:"0 2px 12px rgba(0,0,0,0.15)", letterSpacing:"0.04em" },
+  bubble: { maxWidth:"84%", padding:"16px 20px", borderRadius:12 },
+  bUser: { background:"#0a0a0a", borderRadius:"12px 3px 12px 12px", boxShadow:"0 3px 16px rgba(0,0,0,0.12)", color:"#fff" },
+  bBot: { background:"#fff", border:"1px solid rgba(0,0,0,0.08)", borderRadius:"3px 12px 12px 12px", boxShadow:"0 2px 12px rgba(0,0,0,0.05)" },
+  cInput: { marginTop:12, background:"#fff", border:"1px solid rgba(0,0,0,0.1)", borderRadius:11, padding:"12px 15px", display:"flex", alignItems:"flex-end", gap:10, boxShadow:"0 2px 16px rgba(0,0,0,0.07)" },
+  cTa: { background:"transparent", border:"none", color:"#111", fontFamily:"'Cormorant Garamond',serif", fontSize:16, lineHeight:1.6, resize:"none", flex:1 },
+  cSend: { background:"#0a0a0a", color:"#fff", border:"none", borderRadius:7, width:36, height:36, fontSize:17, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, transition:"all 0.18s", boxShadow:"0 2px 12px rgba(0,0,0,0.15)" },
+  footer: { textAlign:"center", fontFamily:"'Inter',sans-serif", fontSize:9.5, color:"#bbb", padding:"16px 32px", borderTop:"1px solid rgba(0,0,0,0.05)", lineHeight:1.7, maxWidth:1020, margin:"0 auto", letterSpacing:"0.04em" },
+};
+
+const CM = {
+  overlay: { position:"fixed", inset:0, background:"rgba(0,0,0,0.45)", backdropFilter:"blur(8px)", zIndex:300, display:"flex", alignItems:"center", justifyContent:"center" },
+  box: { background:"#fff", border:"1px solid rgba(0,0,0,0.07)", borderRadius:20, padding:"44px 36px 40px", width:"90vw", maxWidth:460, position:"relative", boxShadow:"0 40px 80px rgba(0,0,0,0.18)" },
+  close: { position:"absolute", top:16, right:18, background:"transparent", border:"none", fontSize:18, color:"#bbb", cursor:"pointer" },
+  icon: { fontSize:40, textAlign:"center", marginBottom:10 },
+  title: { fontFamily:"'Cinzel',serif", fontSize:18, fontWeight:600, color:"#0a0a0a", textAlign:"center", marginBottom:4, letterSpacing:"0.1em" },
+  divider: { width:60, height:1, background:"linear-gradient(90deg,transparent,#111,transparent)", margin:"14px auto 18px" },
+  intro: { fontFamily:"'Cormorant Garamond',serif", fontSize:15.5, lineHeight:1.75, color:"#777", textAlign:"center", marginBottom:20 },
+  card: { background:"#f8f8f8", border:"1px solid rgba(0,0,0,0.07)", borderRadius:12, padding:"22px 24px", marginBottom:18 },
+  name: { fontFamily:"'Cinzel',serif", fontSize:18, fontWeight:600, color:"#0a0a0a", marginBottom:4, letterSpacing:"0.08em" },
+  oab: { fontFamily:"'Inter',sans-serif", fontSize:10, color:"#aaa", letterSpacing:"0.12em", textTransform:"uppercase" },
+  separator: { height:1, background:"rgba(0,0,0,0.07)", margin:"16px 0" },
+  msg: { fontFamily:"'Cormorant Garamond',serif", fontSize:15, lineHeight:1.7, color:"#888", fontStyle:"italic", marginBottom:18 },
+  wBtn: { display:"block", textAlign:"center", background:"#25D366", color:"#fff", borderRadius:8, padding:"12px 0", fontFamily:"'Cinzel',serif", fontSize:10, fontWeight:600, letterSpacing:"0.1em", textDecoration:"none", boxShadow:"0 3px 16px rgba(37,211,102,0.25)" },
+  disclaimer: { fontFamily:"'Inter',sans-serif", fontSize:9.5, color:"#ccc", textAlign:"center", lineHeight:1.6, marginTop:14 },
+};
+
+const AP = {
+  overlay: { position:"fixed", inset:0, background:"rgba(0,0,0,0.45)", backdropFilter:"blur(8px)", zIndex:200, display:"flex", alignItems:"center", justifyContent:"center" },
+  panel: { background:"#fff", border:"1px solid rgba(0,0,0,0.08)", borderRadius:20, padding:"44px 36px 40px", width:"90vw", maxWidth:520, position:"relative", boxShadow:"0 40px 80px rgba(0,0,0,0.18)" },
+  closeBtn: { position:"absolute", top:18, right:20, background:"transparent", border:"none", fontSize:18, color:"#aaa", cursor:"pointer", lineHeight:1 },
+  icon: { fontSize:36, marginBottom:10, textAlign:"center" },
+  label: { fontFamily:"'Cinzel',serif", fontSize:18, fontWeight:600, color:"#0a0a0a", textAlign:"center", marginBottom:4, letterSpacing:"0.1em" },
+  divider: { width:60, height:1, background:"linear-gradient(90deg,transparent,#111,transparent)", margin:"14px auto 18px" },
+  welcome: { fontFamily:"'Cormorant Garamond',serif", fontSize:16, lineHeight:1.75, color:"#555", marginBottom:12, textAlign:"center" },
+  desc: { fontFamily:"'Cormorant Garamond',serif", fontSize:15, lineHeight:1.85, color:"#777", marginBottom:28, textAlign:"center" },
+  cta: { display:"block", width:"100%", background:"#0a0a0a", color:"#fff", border:"none", borderRadius:8, padding:"13px 0", fontFamily:"'Cinzel',serif", fontSize:10, fontWeight:600, letterSpacing:"0.14em", cursor:"pointer", boxShadow:"0 4px 20px rgba(0,0,0,0.2)", transition:"all 0.18s" },
+};
+
+const DB = {
+  wrap: { display:"flex", alignItems:"center", gap:7, background:"#f5f5f5", border:"1px solid rgba(0,0,0,0.1)", borderRadius:6, padding:"5px 10px", marginBottom:8 },
+  icon: { fontSize:13 },
+  name: { fontFamily:"'Inter',sans-serif", fontSize:11, color:"#333", fontWeight:500, maxWidth:180, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" },
+  size: { fontFamily:"'Inter',sans-serif", fontSize:10, color:"#999" },
+  remove: { background:"transparent", border:"none", color:"#999", fontSize:13, cursor:"pointer", lineHeight:1, padding:"0 2px" },
+};
+
+const NC = {
+  wrap: { display:"flex", alignItems:"flex-start", gap:10, background:"#f9f9f9", border:"1px solid rgba(0,0,0,0.07)", borderRadius:10, padding:"12px 14px" },
+  icon: { fontSize:14, opacity:0.4, flexShrink:0, marginTop:2 },
+  text: { fontFamily:"'Cormorant Garamond',serif", fontSize:14, lineHeight:1.7, color:"#777", fontStyle:"italic" },
+};
+
+const ACK_S = {
+  wrap: { fontFamily:"'Inter',sans-serif", padding:"6px 4px", minWidth:280 },
+  header: { display:"flex", alignItems:"center", gap:12, marginBottom:14 },
+  iconRing: { width:38, height:38, borderRadius:"50%", background:"rgba(0,0,0,0.06)", border:"1px solid rgba(0,0,0,0.12)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 },
+  title: { fontFamily:"'Cinzel',serif", fontSize:12, fontWeight:600, color:"#111", lineHeight:1.3, letterSpacing:"0.05em" },
+  subtitle: { fontSize:9, color:"#999", letterSpacing:"0.1em", textTransform:"uppercase", marginTop:2 },
+  badge: { fontSize:8, fontWeight:700, letterSpacing:"0.14em", color:"#fff", background:"#111", padding:"3px 8px", borderRadius:3, flexShrink:0 },
+  scanTrack: { position:"relative", height:1, background:"rgba(0,0,0,0.08)", borderRadius:1, overflow:"hidden", marginBottom:14 },
+  scanHead: { position:"absolute", top:0, width:"20%", height:"100%", background:"linear-gradient(90deg,transparent,rgba(0,0,0,0.4),transparent)", transition:"left 0.04s linear" },
+  steps: { display:"flex", flexDirection:"column", gap:11, marginBottom:16 },
+  step: { display:"flex", alignItems:"flex-start", gap:11 },
+  dot: { width:28, height:28, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 },
+  detail: { fontSize:11, color:"#888", fontStyle:"italic", lineHeight:1.5, marginTop:3 },
+  doneTag: { fontSize:9, color:"#aaa", letterSpacing:"0.1em", textTransform:"uppercase", marginTop:1 },
+  trackWrap: { display:"flex", alignItems:"center", gap:10, marginBottom:10 },
+  track: { flex:1, height:2, background:"rgba(0,0,0,0.08)", borderRadius:2, overflow:"hidden", position:"relative" },
+  fill: { height:"100%", background:"linear-gradient(90deg,#444,#111)", borderRadius:2, transition:"width 5.5s cubic-bezier(0.4,0,0.2,1)", position:"relative", overflow:"hidden" },
+  fillShimmer: { position:"absolute", top:0, width:"60%", height:"100%", background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent)" },
+  pctLabel: { fontSize:10, color:"#666", fontWeight:600, letterSpacing:"0.06em", flexShrink:0, minWidth:30 },
+  footer: { fontSize:9, color:"#bbb", letterSpacing:"0.1em", textTransform:"uppercase", textAlign:"center", borderTop:"1px solid rgba(0,0,0,0.07)", paddingTop:8 },
+};
+
+const T = {
+  body: { fontFamily:"'Cormorant Garamond',serif", fontSize:15.5, lineHeight:1.9, color:"#222" },
+  heading: { fontFamily:"'Cinzel',serif", fontSize:11, fontWeight:600, letterSpacing:"0.18em", textTransform:"uppercase", color:"#111", margin:"22px 0 8px", paddingBottom:8, borderBottom:"1px solid rgba(0,0,0,0.1)" },
+  para: { margin:"0 0 6px", color:"#333", letterSpacing:"0.01em" },
+  strong: { fontWeight:700, color:"#000" },
+  dot: { width:5, height:5, borderRadius:"50%", background:"#111", display:"inline-block" },
+  hr: { border:"none", borderTop:"1px solid rgba(0,0,0,0.1)", margin:"18px 0" },
+  secHeading: { display:"flex", alignItems:"baseline", gap:10, margin:"22px 0 10px", paddingBottom:7, borderBottom:"1px solid rgba(0,0,0,0.08)" },
+  secNum: { fontFamily:"'Cinzel',serif", fontSize:10, fontWeight:600, color:"#aaa", letterSpacing:"0.14em", textTransform:"uppercase", flexShrink:0 },
+  secTitle: { fontFamily:"'Cinzel',serif", fontSize:11.5, fontWeight:600, color:"#111", letterSpacing:"0.1em", textTransform:"uppercase" },
+  ul: { margin:"6px 0 12px", paddingLeft:0, listStyle:"none" },
+  ol: { margin:"6px 0 12px", paddingLeft:18 },
+  li: { fontFamily:"'Cormorant Garamond',serif", fontSize:15, lineHeight:1.85, color:"#333", marginBottom:5, paddingLeft:10, borderLeft:"2px solid rgba(0,0,0,0.15)", marginLeft:4 },
+  citationBlock: { display:"flex", alignItems:"flex-start", gap:10, background:"#f8f8f8", border:"1px solid rgba(0,0,0,0.08)", borderLeft:"3px solid rgba(0,0,0,0.3)", borderRadius:"0 6px 6px 0", padding:"10px 14px", margin:"10px 0" },
+  citationIcon: { fontFamily:"'Cinzel',serif", fontSize:15, fontWeight:600, color:"#555", flexShrink:0, marginTop:1 },
+  citationText: { fontFamily:"'Cormorant Garamond',serif", fontSize:14.5, lineHeight:1.75, color:"#555", margin:0, fontStyle:"italic" },
+  blockquote: { borderLeft:"3px solid rgba(0,0,0,0.2)", paddingLeft:16, margin:"12px 0", fontFamily:"'Cormorant Garamond',serif", fontSize:15, lineHeight:1.85, color:"#666", fontStyle:"italic" },
+};
+
+/* ─── HELPERS ─── */
+function parseInline(text) {
+  const parts = text.split(/(\*\*[^*]+\*\*|_[^_]+_)/g);
+  return parts.map((p, i) => {
+    if (p.startsWith("**") && p.endsWith("**")) return <strong key={i} style={T.strong}>{p.slice(2,-2)}</strong>;
+    if (p.startsWith("_") && p.endsWith("_")) return <em key={i} style={{fontStyle:"italic",color:"#555"}}>{p.slice(1,-1)}</em>;
+    return p;
+  });
+}
+
+function RenderMessage({ text }) {
+  if (!text) return <ThinkingDots/>;
+  const lines = text.split("\n");
+  const els = []; let k=0, i=0;
+  while (i < lines.length) {
+    const raw=lines[i], trim=raw.trim();
+    if (!trim) { els.push(<div key={k++} style={{height:10}}/>); i++; continue; }
+    if (/^[─═\-]{3,}$/.test(trim)) { els.push(<hr key={k++} style={T.hr}/>); i++; continue; }
+    const hMatch = trim.match(/^\*\*(.+?)\*\*\s*$/);
+    if (hMatch) { els.push(<p key={k++} style={T.heading}>{hMatch[1]}</p>); i++; continue; }
+    const secMatch = trim.match(/^([IVXLCivxlc]+[\.\d]*|\d+[\.\d]*)\s*[—–-]\s*\*{0,2}(.+?)\*{0,2}$/);
+    if (secMatch) { els.push(<p key={k++} style={T.secHeading}><span style={T.secNum}>{secMatch[1]}</span><span style={T.secTitle}>{secMatch[2].trim()}</span></p>); i++; continue; }
+    if (/^[—\-•]\s/.test(trim)) {
+      const items=[]; while(i<lines.length && /^[—\-•]\s/.test(lines[i].trim())) { items.push(lines[i].trim().replace(/^[—\-•]\s/,"")); i++; }
+      els.push(<ul key={k++} style={T.ul}>{items.map((it,bi)=><li key={bi} style={T.li}>{parseInline(it)}</li>)}</ul>); continue;
+    }
+    if (/^[a-zA-Z][).]\s/.test(trim)) {
+      const items=[]; while(i<lines.length && /^[a-zA-Z][).]\s/.test(lines[i].trim())) { items.push(lines[i].trim().replace(/^[a-zA-Z][).\s]+/,"")); i++; }
+      els.push(<ol key={k++} style={T.ol}>{items.map((it,li)=><li key={li} style={T.li}>{parseInline(it)}</li>)}</ol>); continue;
+    }
+    if (/^\d+[).]\s/.test(trim)) {
+      const items=[]; while(i<lines.length && /^\d+[).]\s/.test(lines[i].trim())) { items.push(lines[i].trim().replace(/^\d+[).]\s+/,"")); i++; }
+      els.push(<ol key={k++} style={T.ol}>{items.map((it,li)=><li key={li} style={T.li}>{parseInline(it)}</li>)}</ol>); continue;
+    }
+    if (/^(Art\.|Súmula|Lei n|Decreto|Portaria|Resolução|CF\/|Código)/i.test(trim)) {
+      els.push(<div key={k++} style={T.citationBlock}><span style={T.citationIcon}>§</span><p style={T.citationText}>{parseInline(trim)}</p></div>); i++; continue;
+    }
+    if (trim.startsWith('"') || trim.startsWith('\u201c')) {
+      els.push(<blockquote key={k++} style={T.blockquote}>{parseInline(trim)}</blockquote>); i++; continue;
+    }
+    els.push(<p key={k++} style={T.para}>{parseInline(trim)}</p>); i++;
+  }
+  return <div style={T.body}>{els}</div>;
+}
+
+function ThinkingDots() {
+  return (
+    <div style={{display:"flex",gap:5,alignItems:"center",padding:"6px 2px"}}>
+      {[0,1,2].map(i=><span key={i} className={`dot-${i}`} style={T.dot}/>)}
+    </div>
+  );
+}
+
+function NoticeCard() {
+  return (
+    <div style={NC.wrap}>
+      <span style={NC.icon}>⏱</span>
+      <div style={NC.text}>O sistema está elaborando um <strong>relatório jurídico detalhado</strong>. Isso pode levar alguns segundos.</div>
+    </div>
+  );
+}
+
+function AckCard() {
+  const [phase,setPhase]=useState(0);
+  const [dots,setDots]=useState("");
+  const [scanning,setScanning]=useState(0);
+  const [pulse,setPulse]=useState(false);
+  const phases=[
+    {icon:"📋",text:"Lendo e interpretando sua consulta",detail:"Identificando os pontos jurídicos centrais do caso"},
+    {icon:"📜",text:"Buscando dispositivos legais aplicáveis",detail:"Constituição Federal · Código Civil · CLT · CDC · CPP…"},
+    {icon:"⚖️",text:"Consultando jurisprudência dos Tribunais",detail:"STF · STJ · TST — súmulas, precedentes e teses vinculantes"},
+    {icon:"📚",text:"Verificando entendimento doutrinário",detail:"Tartuce · Nucci · Godinho Delgado · Nery Jr. · Di Pietro…"},
+    {icon:"🗺️",text:"Mapeando orientações práticas",detail:"Prazos, documentos, ações cabíveis e próximos passos"},
+    {icon:"✍️",text:"Redigindo sua análise jurídica",detail:"Preparando resposta completa e personalizada"},
+  ];
+  useEffect(()=>{
+    const t1=setInterval(()=>setPhase(p=>Math.min(p+1,phases.length-1)),6000);
+    const t2=setInterval(()=>setDots(d=>d.length>=3?"":d+"."),500);
+    const t3=setInterval(()=>setScanning(s=>(s+1)%100),40);
+    const t4=setInterval(()=>setPulse(p=>!p),1200);
+    return()=>{clearInterval(t1);clearInterval(t2);clearInterval(t3);clearInterval(t4);};
+  },[]);
+  const pct=Math.round(((phase+1)/phases.length)*90);
+  return (
+    <div style={ACK_S.wrap}>
+      <div style={ACK_S.header}>
+        <div style={{...ACK_S.iconRing,boxShadow:pulse?"0 0 0 6px rgba(0,0,0,0.06)":"0 0 0 2px rgba(0,0,0,0.03)",transition:"box-shadow 1s ease"}}>
+          <span style={{fontSize:18}}>⚖</span>
+        </div>
+        <div style={{flex:1}}>
+          <div style={ACK_S.title}>Dr. IA está analisando seu caso{dots}</div>
+          <div style={ACK_S.subtitle}>Pesquisa jurídica aprofundada em andamento</div>
+        </div>
+        <div style={{...ACK_S.badge,opacity:pulse?1:0.5,transition:"opacity 1.1s ease"}}>AO VIVO</div>
+      </div>
+      <div style={ACK_S.scanTrack}><div style={{...ACK_S.scanHead,left:`${scanning}%`}}/></div>
+      <div style={ACK_S.steps}>
+        {phases.map((p,i)=>{
+          const done=i<phase,current=i===phase,future=i>phase;
+          return (
+            <div key={i} style={{...ACK_S.step,opacity:future?(i===phase+1?0.4:0.18):1,transition:"opacity 0.6s ease"}}>
+              <div style={{...ACK_S.dot,background:done?"#111":current?"#f0f0f0":"rgba(0,0,0,0.04)",transform:current&&pulse?"scale(1.15)":"scale(1)",transition:"all 0.5s ease",boxShadow:current?(pulse?"0 0 0 4px rgba(0,0,0,0.08)":"0 0 0 2px rgba(0,0,0,0.04)"):"none"}}>
+                {done?<span style={{fontSize:9,color:"#fff",fontWeight:700}}>✓</span>:<span style={{fontSize:13}}>{p.icon}</span>}
+              </div>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{fontFamily:"'Inter',sans-serif",fontSize:12,fontWeight:current?600:400,color:done?"#aaa":current?"#111":"#ccc",textDecoration:done?"line-through":"none",transition:"all 0.4s ease"}}>
+                  {p.text}{current&&<span style={{color:"#999",fontWeight:400}}>{dots}</span>}
+                </div>
+                {current&&<div style={ACK_S.detail}>{p.detail}</div>}
+                {done&&<div style={ACK_S.doneTag}>concluído</div>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div style={ACK_S.trackWrap}>
+        <div style={ACK_S.track}>
+          <div style={{...ACK_S.fill,width:`${pct}%`}}>
+            <div style={{...ACK_S.fillShimmer,left:pulse?"110%":"-60%",transition:"left 1.2s ease"}}/>
+          </div>
+        </div>
+        <div style={ACK_S.pctLabel}>{pct}%</div>
+      </div>
+      <div style={ACK_S.footer}>Análise fundamentada na legislação brasileira vigente</div>
+    </div>
+  );
+}
+
+function DocBadge({doc,onRemove}) {
+  if (!doc) return null;
+  return (
+    <div style={DB.wrap}>
+      <span style={DB.icon}>📄</span>
+      <span style={DB.name}>{doc.name}</span>
+      <span style={DB.size}>{Math.round(doc.text.length/100)/10}k chars</span>
+      <button style={DB.remove} onClick={onRemove}>✕</button>
+    </div>
+  );
+}
+
+function AreaPanel({area:sel,onClose,onConsult}) {
+  if (!sel) return null;
+  const a=areas.find(x=>x.label===sel); if (!a) return null;
+  return (
+    <div style={AP.overlay} onClick={onClose}>
+      <div style={AP.panel} className="fade-up" onClick={e=>e.stopPropagation()}>
+        <button style={AP.closeBtn} onClick={onClose}>✕</button>
+        <div style={AP.icon}>{a.icon}</div>
+        <div style={AP.label}>{a.label}</div>
+        <div style={AP.divider}/>
+        <p style={AP.welcome}>Bem-vindo à área de <strong>{a.label}</strong>. O Dr. IA está pronto para orientá-lo com base na legislação brasileira vigente.</p>
+        <p style={AP.desc}>{a.desc}</p>
+        <button className="ap-cta" style={AP.cta} onClick={()=>{onConsult(a.label);onClose();}}>Fazer uma consulta nesta área →</button>
+      </div>
+    </div>
+  );
+}
+
+/* ─── LOGO SVG ─── */
+function LogoSVG() {
+  return (
+    <svg viewBox="0 0 48 56" fill="none" style={{width:40,height:46}}>
+      <ellipse cx="24" cy="51" rx="14" ry="3" fill="rgba(0,0,0,0.06)" className="logo-glow-ring"/>
+      <line x1="24" y1="3" x2="24" y2="50" stroke="url(#lg1)" strokeWidth="1.8" className="logo-beam"/>
+      <circle cx="24" cy="3" r="2.5" fill="#111" className="logo-knob"/>
+      <line x1="6" y1="16" x2="42" y2="16" stroke="url(#lg1)" strokeWidth="1.5" className="logo-beam"/>
+      <line x1="9" y1="16" x2="7" y2="30" stroke="#33333388" strokeWidth="1" strokeDasharray="2,1.5" className="logo-chain-l"/>
+      <line x1="39" y1="16" x2="41" y2="26" stroke="#33333388" strokeWidth="1" strokeDasharray="2,1.5" className="logo-chain-r"/>
+      <ellipse cx="7" cy="32" rx="7" ry="2.5" fill="none" stroke="#111" strokeWidth="1.2" className="logo-pan-l"/>
+      <ellipse cx="41" cy="28" rx="7" ry="2.5" fill="none" stroke="#111" strokeWidth="1.2" className="logo-pan-r"/>
+      <line x1="18" y1="50" x2="30" y2="50" stroke="#111" strokeWidth="2"/>
+      <line x1="15" y1="53" x2="33" y2="53" stroke="#33333366" strokeWidth="1.5"/>
+      <defs>
+        <linearGradient id="lg1" x1="0" y1="0" x2="48" y2="0" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#111" stopOpacity="0.1"/>
+          <stop offset="50%" stopColor="#111"/>
+          <stop offset="100%" stopColor="#111" stopOpacity="0.1"/>
+        </linearGradient>
+      </defs>
+    </svg>
+  );
+}
+
+/* ─── MAIN APP ─── */
+function App() {
+  const [msgs,setMsgs]=useState([]);
+  const [input,setInput]=useState("");
+  const [busy,setBusy]=useState(false);
+  const [area,setArea]=useState(null);
+  const [panelArea,setPanelArea]=useState(null);
+  const [contactOpen,setContactOpen]=useState(false);
+  const [view,setView]=useState("home");
+  const [questions,setQuestions]=useState(()=>pickQuestions());
+  const [docFile,setDocFile]=useState(null);
+  const [docLoading,setDocLoading]=useState(false);
+  const fileInputRef=useRef(null);
+  const bottomRef=useRef(null);
+  const busyRef=useRef(false);
+  const msgsRef=useRef([]);
+  const areaRef=useRef(null);
+  const docFileRef=useRef(null);
+
+  useEffect(()=>{msgsRef.current=msgs;},[msgs]);
+  useEffect(()=>{areaRef.current=area;},[area]);
+  useEffect(()=>{docFileRef.current=docFile;},[docFile]);
+  useEffect(()=>{ bottomRef.current?.scrollIntoView({behavior:"smooth"}); },[msgs]);
+
+  const handleFile=useCallback(async(file)=>{
+    if (!file) return;
+    const ext=file.name.split(".").pop().toLowerCase();
+    if (!["doc","docx"].includes(ext)) { alert("Apenas arquivos .doc e .docx são suportados."); return; }
+    setDocLoading(true);
+    try {
+      const arrayBuffer=await file.arrayBuffer();
+      const result=await mammoth.extractRawText({arrayBuffer});
+      const text=result.value?.trim();
+      if (!text) throw new Error("Documento vazio ou não legível.");
+      setDocFile({name:file.name,text});
+    } catch(e) { alert("Não foi possível ler o documento: "+e.message); }
+    finally { setDocLoading(false); }
+  },[]);
+
+  const send=useCallback(async(textArg)=>{
+    const currentDoc=docFileRef.current;
+    const text=textArg?.trim()||(currentDoc?"Por favor, analise o documento anexado.":"");
+    if (!text||busyRef.current) return;
+    const userMsg={role:"user",content:text};
+    const history=[...msgsRef.current,userMsg];
+    busyRef.current=true; setBusy(true);
+    setMsgs([...history,{role:"assistant",content:"__notice__"},{role:"assistant",content:"__ack__"}]);
+    setInput(""); setView("chat");
+    try {
+      const ctx=areaRef.current?`\nÁrea: ${areaRef.current}`:"";
+      const cleanHistory=history.filter(m=>m.content!=="__ack__"&&m.content!=="__notice__");
+      const messagesWithDoc=cleanHistory.slice(-6).map((m,i,arr)=>{
+        if (i===arr.length-1&&m.role==="user"&&currentDoc) {
+          return {...m,content:`${m.content}\n\n---\n📄 DOCUMENTO ANEXADO: "${currentDoc.name}"\n\nCONTEÚDO DO DOCUMENTO:\n${currentDoc.text.slice(0,12000)}\n---`};
+        }
+        return m;
+      });
+      const payload={model:"claude-haiku-4-5-20251001",max_tokens:8000,system:SYSTEM_PROMPT+ctx,messages:messagesWithDoc};
+      let res,data,attempts=0;
+      while (attempts<3) {
+        res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+        data=await res.json();
+        if (res.status===529||data?.error?.type==="overloaded_error") {
+          attempts++; if (attempts<3) await new Promise(r=>setTimeout(r,3000*attempts)); else throw new Error("overloaded");
+        } else break;
+      }
+      if (!res.ok) throw new Error(data?.error?.message||`Erro ${res.status}`);
+      const full=data.content?.map(b=>b.text||"").join("").trim();
+      if (!full) throw new Error("Resposta vazia da API");
+      setMsgs([...history,{role:"assistant",content:full}]);
+      docFileRef.current=null; setDocFile(null);
+    } catch(err) {
+      const msg=err?.message?.includes("API key")
+        ?"Chave de API inválida ou não autorizada."
+        :err?.message?.includes("overloaded")
+        ?"O servidor está sobrecarregado. Tente novamente em alguns segundos."
+        :`Erro na conexão: ${err?.message||"tente novamente."}`;
+      setMsgs(prev=>{const n=[...prev];n[n.length-1]={role:"assistant",content:msg};return n;});
+    } finally { busyRef.current=false; setBusy(false); }
+  },[]);
+
+  const onKey=(e)=>{ if (e.key==="Enter"&&!e.shiftKey){e.preventDefault();send(input);} };
+
+  const reset=()=>{
+    busyRef.current=false; msgsRef.current=[]; areaRef.current=null;
+    setBusy(false); setMsgs([]); setInput(""); setArea(null); setView("home");
+    setDocFile(null); setQuestions(pickQuestions());
+  };
+
+  const startAreaChat=(lbl)=>{
+    areaRef.current=lbl; setArea(lbl); setMsgs([]); msgsRef.current=[];
+    setPanelArea(null); setView("area-chat");
+  };
+
+  const areaInfo=areas.find(x=>x.label===area);
+
+  return (
+    <div style={S.root}>
+      <div style={S.orb1}/><div style={S.orb2}/>
+
+      {/* HEADER */}
+      <header style={S.header}>
+        <div style={S.hRow}>
+          <div style={S.logo} onClick={reset}>
+            <div style={S.logoIcon} className="logo-icon-wrap"><LogoSVG/></div>
+            <div>
+              <div style={S.brand}>Dr. IA</div>
+              <div style={S.brandSub}>Consultoria Jurídica Digital</div>
+            </div>
+          </div>
+          <button className="lawyer-btn" style={S.lawyerBtn} onClick={()=>setContactOpen(true)}>
+            👨‍⚖️ Deseja um advogado?
+          </button>
+        </div>
+      </header>
+
+      {/* CONTACT MODAL */}
+      {contactOpen&&(
+        <div style={CM.overlay} onClick={()=>setContactOpen(false)}>
+          <div style={CM.box} className="fade-up" onClick={e=>e.stopPropagation()}>
+            <button style={CM.close} onClick={()=>setContactOpen(false)}>✕</button>
+            <div style={CM.icon}>👨‍⚖️</div>
+            <div style={CM.title}>Fale com um Advogado</div>
+            <div style={CM.divider}/>
+            <p style={CM.intro}>Quer uma assessoria jurídica personalizada? Entre em contato com nosso advogado parceiro:</p>
+            <div style={CM.card}>
+              <div style={CM.name}>Dr. José</div>
+              <div style={CM.oab}>OAB/XX · Advogado</div>
+              <div style={CM.separator}/>
+              <p style={CM.msg}>Olá, Dr. José! Vim pelo site Dr. IA e gostaria de agendar uma consulta jurídica.</p>
+              <a href="https://wa.me/55XXXXXXXXXXX?text=Ol%C3%A1%2C+Dr.+Jos%C3%A9!+Vim+pelo+site+Dr.+IA+e+gostaria+de+agendar+uma+consulta+jur%C3%ADdica." target="_blank" rel="noreferrer" style={CM.wBtn}>
+                💬 Enviar mensagem via WhatsApp
+              </a>
+            </div>
+            <p style={CM.disclaimer}>O atendimento com Dr. José é presencial ou por videoconferência, mediante agendamento.</p>
+          </div>
+        </div>
+      )}
+
+      <input ref={fileInputRef} type="file" accept=".doc,.docx" style={{display:"none"}}
+        onChange={e=>{handleFile(e.target.files[0]);e.target.value="";}}/>
+
+      <main style={S.main}>
+
+        {/* ══ HOME ══ */}
+        {view==="home"&&(
+          <div className="fade-up">
+            {/* HERO */}
+            <div style={S.heroBanner} className="hero3d">
+              <div style={S.heroGrid}/>
+              <div style={S.heroSpotlight}/>
+              <div style={S.orb3d1} className="orb-float-1"/>
+              <div style={S.orb3d2} className="orb-float-2"/>
+              <div style={S.heroInner}>
+                <div style={S.heroLeft} className="eyebrow-slide">
+                  <div style={S.heroTagStack}>
+                    <span style={S.heroTag}>Legislação</span>
+                    <span style={S.heroTag}>Jurisprudência</span>
+                    <span style={S.heroTag}>Doutrina</span>
+                  </div>
+                  <p style={S.heroSideText}>Análise jurídica fundamentada na legislação brasileira vigente.</p>
+                </div>
+                <div style={S.heroCenter}>
+                  <div style={S.heroCenterName} className="name-reveal">
+                    <span style={S.heroNameLine1}>Dr.</span>
+                    <span style={S.heroNameLine2}>IA</span>
+                  </div>
+                  <div style={S.heroEyebrow} className="cta-slide">⚖ CONSULTORIA JURÍDICA · INTELIGÊNCIA ARTIFICIAL</div>
+                </div>
+                <div style={S.heroRight} className="lead-slide">
+                  <div style={S.heroStatStack}>
+                    <div style={S.heroStat}><span style={S.heroStatNum}>CF/88</span><span style={S.heroStatLabel}>Constituição Federal</span></div>
+                    <div style={S.heroStatDivider}/>
+                    <div style={S.heroStat}><span style={S.heroStatNum}>25+</span><span style={S.heroStatLabel}>Áreas do Direito</span></div>
+                    <div style={S.heroStatDivider}/>
+                    <div style={S.heroStat}><span style={S.heroStatNum}>STJ</span><span style={S.heroStatLabel}>Jurisprudência</span></div>
+                  </div>
+                </div>
+              </div>
+              <div style={S.heroCta} className="cta-slide">
+                <span style={S.heroCtaDot}/><span style={S.heroCtaText}>Role para baixo e faça sua consulta</span>
+                <span style={S.heroCtaArrow} className="arrow-bounce">↓</span>
+              </div>
+            </div>
+
+            {/* AREAS */}
+            <div style={S.section}>
+              <div style={S.secLabel}>Áreas de Atuação</div>
+              <div style={S.aGrid}>
+                {areas.map((a,idx)=>(
+                  <button key={a.label} className={`area-card${area===a.label?" area-card-on":""}`}
+                    onClick={()=>setPanelArea(a.label)}
+                    style={{...S.aCard,animationDelay:`${idx*40}ms`}}>
+                    <span style={S.aCardIcon}>{a.icon}</span>
+                    <span style={S.aCardLabel}>{a.label}</span>
+                    <span style={S.aCardArrow}>→</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <AreaPanel area={panelArea} onClose={()=>setPanelArea(null)} onConsult={startAreaChat}/>
+
+            {/* QUESTIONS */}
+            <div style={S.section}>
+              <div style={S.secLabel}>Perguntas Frequentes</div>
+              <div style={S.qGrid}>
+                {questions.map(q=>(
+                  <button key={q} className="quick-btn" style={S.qBtn} onClick={()=>send(q)}>
+                    <span className="qarr" style={S.qarr}>›</span>{q}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* INPUT */}
+            <div style={S.inputCard}>
+              <DocBadge doc={docFile} onRemove={()=>setDocFile(null)}/>
+              <textarea style={S.ta} rows={3} placeholder="Digite sua consulta jurídica…"
+                value={input} onChange={e=>setInput(e.target.value)} onKeyDown={onKey}/>
+              <div style={S.taRow}>
+                <div style={{display:"flex",alignItems:"center",gap:10}}>
+                  <button style={{...S.attachBtn,opacity:docLoading?0.5:1}}
+                    onClick={()=>fileInputRef.current.click()} disabled={docLoading}>
+                    {docLoading?"⏳":"📎"} {docLoading?"Lendo…":"Anexar .docx"}
+                  </button>
+                  <span style={S.hint}>Enter para enviar · Shift+Enter nova linha</span>
+                </div>
+                <button className="sbtn" style={{...S.sbtn,...(busy||(!input.trim()&&!docFile)?S.off:{})}}
+                  onClick={()=>send(input)} disabled={busy||(!input.trim()&&!docFile)}>
+                  Consultar →
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ══ CHAT ══ */}
+        {(view==="chat"||view==="area-chat")&&(
+          <div style={S.chatWrap}>
+            <div style={S.chatBar}>
+              <button className="back" style={S.back} onClick={reset}>← {view==="area-chat"?"Início":"Nova consulta"}</button>
+              <div style={S.chatMeta}>
+                {view==="area-chat"&&<span style={{fontSize:18,marginRight:6}}>{areaInfo?.icon}</span>}
+                <em style={S.chatDr}>{view==="area-chat"?area:"Dr. IA"}</em>
+                {view==="chat"&&area&&<span style={S.chatArea}>· {area}</span>}
+              </div>
+            </div>
+
+            <div style={S.feed}>
+              {view==="area-chat"&&msgs.length===0&&(
+                <div className="fade-up" style={{...S.row,justifyContent:"flex-start"}}>
+                  <div style={S.av}>Dr</div>
+                  <div style={{...S.bubble,...S.bBot}}>
+                    <div style={T.body}>
+                      <p style={{...T.heading,marginTop:0}}>{areaInfo?.icon} {area}</p>
+                      <p style={T.para}>Olá! Você está na área de <strong>{area}</strong>.</p>
+                      <div style={{height:8}}/>
+                      <p style={T.para}>{areaInfo?.desc}</p>
+                      <div style={{height:8}}/>
+                      <p style={T.para}>Sinta-se à vontade para fazer sua pergunta. Estou aqui para orientá-lo com base na legislação brasileira vigente.</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {msgs.map((m,i)=>(
+                <div key={i} className="fade-up" style={{...S.row,justifyContent:m.role==="user"?"flex-end":"flex-start"}}>
+                  {m.role==="assistant"&&<div style={S.av}>Dr</div>}
+                  <div style={{...S.bubble,...(m.role==="user"?S.bUser:S.bBot)}}>
+                    {m.role==="user"
+                      ?<span style={{fontFamily:"'Inter',sans-serif",fontSize:13}}>{m.content}</span>
+                      :m.content==="__ack__"?<AckCard/>
+                      :m.content==="__notice__"?<NoticeCard/>
+                      :<RenderMessage text={m.content}/>
+                    }
+                  </div>
+                </div>
+              ))}
+              <div ref={bottomRef}/>
+            </div>
+
+            <div style={S.cInput}>
+              <div style={{width:"100%"}}>
+                <DocBadge doc={docFile} onRemove={()=>setDocFile(null)}/>
+                <div style={{display:"flex",alignItems:"flex-end",gap:8}}>
+                  <button style={S.attachIconBtn} title="Anexar .docx"
+                    onClick={()=>fileInputRef.current.click()} disabled={docLoading}>
+                    {docLoading?"⏳":"📎"}
+                  </button>
+                  <textarea style={{...S.cTa,flex:1}} rows={2}
+                    placeholder={view==="area-chat"?`Tire sua dúvida sobre ${area}…`:"Faça outra pergunta ao Dr. IA…"}
+                    value={input} onChange={e=>setInput(e.target.value)} onKeyDown={onKey}/>
+                  <button className="sbtn" style={{...S.cSend,...(busy||(!input.trim()&&!docFile)?S.off:{})}}
+                    onClick={()=>send(input)} disabled={busy||(!input.trim()&&!docFile)}>→</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
+
+      <footer style={S.footer}>
+        ⚠️ As orientações do Dr. IA têm caráter informativo e não substituem assessoria jurídica formal. Para casos específicos, consulte sempre um advogado.
+      </footer>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
